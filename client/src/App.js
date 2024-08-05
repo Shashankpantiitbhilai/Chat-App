@@ -1,0 +1,53 @@
+import "./App.css";
+import React, { useEffect, useState, createContext } from "react";
+import { BrowserRouter } from "react-router-dom";
+import Main from "./Main";
+import { fetchCredentials } from "./services/auth";
+
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import theme from "./theme";
+ // Import the NotificationWrapper
+
+const AdminContext = createContext();
+
+
+function App() {
+  const [IsUserLoggedIn, setIsUserLoggedIn] = useState(null);
+ 
+  const [isLoading, setIsLoading] = useState(true);
+  useEffect(() => {
+    setIsLoading(true);
+    fetchCredentials().then((User) => {
+      if (User) {
+        setIsUserLoggedIn(User);
+
+      }
+      setIsLoading(false);
+    });
+  }, []);
+
+  if (isLoading) {
+    return "Loading";
+  }
+
+
+
+  return (
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AdminContext.Provider value={{ IsUserLoggedIn, setIsUserLoggedIn }}>
+  
+          <BrowserRouter>
+          
+              <Main />
+         
+          </BrowserRouter>
+     
+      </AdminContext.Provider>
+    </ThemeProvider>
+  );
+}
+
+export { AdminContext };
+export default App;
