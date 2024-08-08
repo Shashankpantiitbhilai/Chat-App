@@ -4,7 +4,7 @@ const nodemailer = require("nodemailer");
 const bcrypt = require("bcrypt");
 const otpGenerator = require('otp-generator');
 const jwt = require("jsonwebtoken");
-const passport = require("../passportConfig");
+const {passport} = require("../passportConfig");
 const User = require("../models/user"); // Assuming you have a User model
 // Assuming you have a LibStudent model
 const redisClient = require('../redis');
@@ -149,14 +149,7 @@ router.get("/fetchAuth", function (req, res) {
     }
 });
 
-router.post("/login", passport.authenticate("local"), async (req, res) => {
-    const { email, password } = req.body;
-    const emailRegex = new RegExp(`^\\s*${email}\\s*$`, 'i');
 
-
-    res.status(200).json({ message: "User Login is successful", user: req.user });
-
-});
 
 router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
@@ -164,8 +157,8 @@ router.get('/google/callback',
     passport.authenticate('google', { failureRedirect: '/login?auth_success=false' }),
     async (req, res) => {
         const frontendUrl = process.env.NODE_ENV === 'production' ? process.env.FRONTEND_PROD : process.env.FRONTEND_DEV;
-        const userInfo = { ...req.user._doc };
-        console.log(userInfo)
+        const userInfo = { ...req.user._doc, token: req.user.token };
+      
         const encodedUserInfo = encodeURIComponent(JSON.stringify(userInfo));
         res.redirect(`${frontendUrl}/login?auth_success=true&user_info=${encodedUserInfo}`);
     }

@@ -5,12 +5,10 @@ import { AdminContext } from "./App";
 const ProtectedRoute = ({ children }) => {
     const { IsUserLoggedIn } = useContext(AdminContext);
 
-    console.log(IsUserLoggedIn)
+    console.log(IsUserLoggedIn);
     if (!IsUserLoggedIn) {
-        return <Navigate to="/login" replace />;
+        return (<Navigate to="/login" replace />);
     }
-
-
 
     return children;
 };

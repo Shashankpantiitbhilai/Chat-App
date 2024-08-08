@@ -53,12 +53,12 @@ function Login() {
     const urlParams = new URLSearchParams(window.location.search);
     const authSuccess = urlParams.get("auth_success");
     const userInfo = urlParams.get("user_info");
-console.log(userInfo,"kkkkkk")
+    console.log(userInfo, "kkkkkk");
     if (authSuccess === "true" && userInfo) {
       try {
         const user = JSON.parse(decodeURIComponent(userInfo));
         setIsUserLoggedIn(user); // Set login state to true
-console.log(user,"kkkkkkkkkk")
+        console.log(user, "kkkkkkkkkk");
         if (user.role === "admin") {
           navigate("/admin_home");
         } else {
@@ -76,12 +76,10 @@ console.log(user,"kkkkkkkkkk")
   }, [navigate, setIsUserLoggedIn]);
 
   const getBackendUrl = () => {
-    if (process.env.NODE_ENV === "production") {
-      return `${process.env.REACT_APP_BACKEND_PROD}`;
+    if (import.meta.env.PROD) {
+      return `${import.meta.env.VITE_BACKEND_PROD}`;
     }
-    return (
-      process.env.REACT_APP_BACKEND_DEV || process.env.REACT_APP_BACKEND_URL
-    );
+    return import.meta.env.VITE_BACKEND_DEV || import.meta.env.VITE_BACKEND_URL;
   };
 
   const handleGoogleSignIn = () => {
